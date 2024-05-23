@@ -5,12 +5,17 @@ exports.handler = async function(event, context) {
   if (!url) {
     return {
       statusCode: 400,
-      body: 'No URL provided',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, token',
+        'Access-Control-Allow-Methods': 'GET'
+      },
+      body: JSON.stringify({ error: 'No URL provided' }),
     };
   }
-  
+
   const token = event.headers.token;
-  
+
   try {
     const response = await axios.get(url, {
       headers: {
@@ -19,11 +24,21 @@ exports.handler = async function(event, context) {
     });
     return {
       statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, token',
+        'Access-Control-Allow-Methods': 'GET'
+      },
       body: JSON.stringify(response.data),
     };
   } catch (error) {
     return {
       statusCode: error.response?.status || 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, token',
+        'Access-Control-Allow-Methods': 'GET'
+      },
       body: JSON.stringify({ error: error.message }),
     };
   }
